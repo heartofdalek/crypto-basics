@@ -2,7 +2,21 @@
 class Base():
     
     def load(self, key, mapping):
-        print("load(key, mapping): define me")
+        self.key = int(key)
+        
+        with open(mapping) as file:
+            lines = [line.rstrip("\n") for line in file]
+            
+        self.src_chars = list(lines[0])
+        self.dst_chars = list(lines[1])
+        self.src_chars_len = len(self.src_chars)
+        self.dst_chars_len = len(self.dst_chars)
+        
+        if self.key<0 or self.key>16:
+            raise Exception("Key should be in range of 0-16")
+        
+        if self.src_chars_len != self.dst_chars_len or self.dst_chars_len == 0 or self.src_chars_len == 0:
+            raise Exception("Character mapping lines is empty or charaster sets doesn't fit in length")
     
     def decode(self, payload):
         print("decode(payload): define me")

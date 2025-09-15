@@ -3,7 +3,7 @@ from enc.strategy.base import Base as BaseStrategy
 class EncryptStrategy():
     
     allowed_strategies = {
-        'substitute' : 'Substitute'
+        'caesar' : 'Caesar'
     }
     
     def __init(self):

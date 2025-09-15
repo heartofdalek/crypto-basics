@@ -6,7 +6,7 @@ from enc.sf import EncryptStrategy
 parser = OptionParser()
 parser.add_option("-k", "--key", dest="key", default="8", help="encryption key")
 parser.add_option("-m", "--map", dest="mapping", default="mapping.txt", help="char mapping file")
-parser.add_option("-s", "--strategy", dest="strategy", default="substitute", help="encryption strategy method")
+parser.add_option("-s", "--strategy", dest="strategy", default="caesar", help="encryption strategy method")
 parser.add_option("-t", "--type", dest="type", default="encode", help="encryption direction: encode or decode")
 
 (options, args) = parser.parse_args()
