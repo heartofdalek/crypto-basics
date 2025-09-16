@@ -1,6 +1,6 @@
 from enc.strategy.base import Base as BaseStrategy
 
-class Caesar(BaseStrategy):
+class CaesarMapped(BaseStrategy):
 
     lines = []
 

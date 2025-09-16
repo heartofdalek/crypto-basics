@@ -3,7 +3,8 @@ from enc.strategy.base import Base as BaseStrategy
 class EncryptStrategy():
     
     allowed_strategies = {
-        'caesar' : 'Caesar'
+        'caesar_simple' : 'CaesarSimple',
+        'caesar_mapped' : 'CaesarMapped',
     }
     
     def __init(self):

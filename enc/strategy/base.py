@@ -1,6 +1,8 @@
 
 class Base():
     
+    lines = []
+    
     def load(self, key, mapping):
         self.key = int(key)
         
