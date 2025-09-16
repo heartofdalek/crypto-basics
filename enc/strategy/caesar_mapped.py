@@ -4,9 +4,9 @@ class CaesarMapped(BaseStrategy):
 
     lines = []
 
-    def load(self, key, mapping):
+    def load(self, options):
         
-        super().load(key, mapping)
+        super().load(options)
         
         if set(self.src_chars) != set(self.dst_chars):
             print("")

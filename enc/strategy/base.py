@@ -3,10 +3,10 @@ class Base():
     
     lines = []
     
-    def load(self, key, mapping):
-        self.key = int(key)
+    def load(self, options):
+        self.key = int(options.key)
         
-        with open(mapping) as file:
+        with open(options.mapping) as file:
             lines = [line.rstrip("\n") for line in file]
             
         self.src_chars = list(lines[0])
@@ -26,7 +26,10 @@ class Base():
     def encode(self, payload):
         print("encode(payload): define me")
         
-    def call(self, method, payload):
+    def call(self, options, payload):
+        
+        method = options.type
+        
         if method == 'decode':
             return self.decode(payload)
         elif method == 'encode':

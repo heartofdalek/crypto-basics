@@ -1,24 +1,27 @@
 #!/usr/bin/python3
 
-from optparse import OptionParser
+from argparse import ArgumentParser as OptionParser
 from enc.sf import EncryptStrategy
 
-parser = OptionParser()
-parser.add_option("-k", "--key", dest="key", default="8", help="encryption key")
-parser.add_option("-m", "--map", dest="mapping", default="mapping_orig.txt", help="char mapping file")
-parser.add_option("-s", "--strategy", dest="strategy", default="caesar_simple", help="encryption strategy method")
-parser.add_option("-t", "--type", dest="type", default="encode", help="encryption direction: encode or decode")
+parser = OptionParser(description='Make symmetric encryption with some basic algo\'s')
 
-(options, args) = parser.parse_args()
+parser.add_argument("-k", "--key", dest="key", default="8", help="encryption key: int from 0 to 16")
+parser.add_argument("-m", "--map", dest="mapping", default="mapping_orig.txt", help="char mapping file")
+parser.add_argument("-s", "--strategy", dest="strategy", default="caesar_simple", help="encryption strategy method: caesar_simple, caesar_mapped")
+parser.add_argument("-t", "--type", dest="type", default="encode", help="encryption direction: encode, decode")
+parser.add_argument("-d", "--debug", dest="is_debug", action='store_true', default=False, help="enable debug if specified")
+parser.add_argument("payload", type=str, nargs='?', default="", help="text to encode/decode")
 
-payload = args[0] if len(args) else ""
+options = parser.parse_args()
+
+payload = options.payload if len(options.payload) else ""
 
 try:
     
     strategy = EncryptStrategy().create(options.strategy)
-    strategy.load(options.key, options.mapping)
+    strategy.load(options)
     
-    result = strategy.call(options.type, payload)
+    result = strategy.call(options, payload)
     
     print(result)
     
