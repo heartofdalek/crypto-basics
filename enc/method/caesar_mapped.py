@@ -2,11 +2,12 @@ from enc.method.base import Base as BaseMethod
 
 class CaesarMapped(BaseMethod):
 
-    lines = []
-
     def load(self, options):
         
         super().load(options)
+        
+        if self.key<0 or self.key>16:
+            raise Exception("Key should be in range of 0-16")
         
         if set(self.src_chars) != set(self.dst_chars):
             print("")

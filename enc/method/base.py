@@ -14,9 +14,6 @@ class Base():
         self.src_chars_len = len(self.src_chars)
         self.dst_chars_len = len(self.dst_chars)
         
-        if self.key<0 or self.key>16:
-            raise Exception("Key should be in range of 0-16")
-        
         if self.src_chars_len != self.dst_chars_len or self.dst_chars_len == 0 or self.src_chars_len == 0:
             raise Exception("Character mapping lines is empty or charaster sets doesn't fit in length")
     

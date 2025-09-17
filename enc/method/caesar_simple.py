@@ -1,7 +1,14 @@
 from enc.method.base import Base as BaseMethod
 
 class CaesarSimple(BaseMethod):
+
+    def load(self, options):
         
+        super().load(options)
+        
+        if self.key<0 or self.key>16:
+            raise Exception("Key should be in range of 0-16")
+
     def find_index(self, chars, char):
         return chars.index(char)
 

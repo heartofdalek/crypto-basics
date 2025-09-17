@@ -7,7 +7,7 @@ class EncryptMethod():
         'caesar_mapped' : 'CaesarMapped',
     }
     
-    def __init(self):
+    def __init__(self):
         pass
     
     def create(self, method) -> BaseMethod:
