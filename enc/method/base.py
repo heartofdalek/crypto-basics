@@ -4,7 +4,10 @@ class Base():
     lines = []
     
     def load(self, options):
-        self.key = int(options.key)
+        
+        self.before_load()
+        
+        self.key = options.key
         
         with open(options.mapping) as file:
             lines = [line.rstrip("\n") for line in file]
@@ -16,7 +19,15 @@ class Base():
         
         if self.src_chars_len != self.dst_chars_len or self.dst_chars_len == 0 or self.src_chars_len == 0:
             raise Exception("Character mapping lines is empty or charaster sets doesn't fit in length")
+        
+        self.after_load()
     
+    def before_load(self):
+        print("before_load(): define me")
+        
+    def after_load(self):
+        print("after_load(): define me")
+        
     def decode(self, payload):
         print("decode(payload): define me")
     
