@@ -1,13 +1,14 @@
-
 class Base():
-    
-    lines = []
+
     
     def load(self, options):
+        
+        self.options = options
         
         self.before_load()
         
         self.key = options.key
+        self.key_len = len(self.key)
         
         with open(options.mapping) as file:
             lines = [line.rstrip("\n") for line in file]
