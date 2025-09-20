@@ -18,7 +18,7 @@ parser = OptionParser(description='Make symmetric encryption with some basic alg
 
 parser.add_argument("-k", "--key", dest="key", default="8", help="encryption key")
 parser.add_argument("-m", "--map", dest="mapping", default="mapping_orig.txt", help="char mapping file: {}".format(", ".join(mappings_available)))
-parser.add_argument("-s", "--method", dest="method", default="subst", help="encryption method: {}".format(", ".join(allowed_methods)))
+parser.add_argument("-s", "--method", dest="method", default="subst_cbc", help="encryption method: {}".format(", ".join(allowed_methods)))
 parser.add_argument("-t", "--type", dest="type", default="encode", help="encryption direction: encode, decode")
 parser.add_argument("-d", "--debug", dest="is_debug", action='store_true', default=False, help="enable debug if specified")
 parser.add_argument("payload", type=str, nargs='?', default="", help="text to encode/decode")
