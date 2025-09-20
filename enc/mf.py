@@ -5,7 +5,7 @@ class EncryptMethod():
     allowed_methods = {
         'caesar_simple' : 'CaesarSimple',
         'caesar_mapped' : 'CaesarMapped',
-        'subst_cbc' : 'SubstCBC',
+        'subst_cfb' : 'SubstCFB',
     }
     
     def __init__(self):

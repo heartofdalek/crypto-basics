@@ -1,6 +1,6 @@
 from enc.method.base import Base as BaseMethod
 
-class SubstCBC(BaseMethod):
+class SubstCFB(BaseMethod):
     
     def before_load(self):
         pass
