@@ -16,17 +16,17 @@ print_test_data() {
     echo ""
 }
 
-ENCODED_PAYLOAD=$(./cryptobase.py -k ${CAESAR_KEY} -s caesar_mapped -t encode "${PAYLOAD}")
-DECODED_PAYLOAD=$(./cryptobase.py -k ${CAESAR_KEY} -s caesar_mapped -t decode "${ENCODED_PAYLOAD}")
+ENCODED_PAYLOAD=$(./cryptobase.py -k ${CAESAR_KEY} -m mapping.txt -s caesar_mapped -t encode "${PAYLOAD}")
+DECODED_PAYLOAD=$(./cryptobase.py -k ${CAESAR_KEY} -m mapping.txt -s caesar_mapped -t decode "${ENCODED_PAYLOAD}")
 
 print_test_data "Caesar with substitute alphabet" $CAESAR_KEY "${PAYLOAD}" "${ENCODED_PAYLOAD}" "${DECODED_PAYLOAD}" | column -tL  -s "|"
 
-ENCODED_PAYLOAD=$(./cryptobase.py -k ${CAESAR_KEY} -s caesar_simple -t encode "${PAYLOAD}")
-DECODED_PAYLOAD=$(./cryptobase.py -k ${CAESAR_KEY} -s caesar_simple -t decode "${ENCODED_PAYLOAD}")
+ENCODED_PAYLOAD=$(./cryptobase.py -k ${CAESAR_KEY} -m mapping.txt -s caesar_simple -t encode "${PAYLOAD}")
+DECODED_PAYLOAD=$(./cryptobase.py -k ${CAESAR_KEY} -m mapping.txt -s caesar_simple -t decode "${ENCODED_PAYLOAD}")
 
 print_test_data "Caesar basic" $CAESAR_KEY "${PAYLOAD}" "${ENCODED_PAYLOAD}" "${DECODED_PAYLOAD}" | column -tL  -s "|"
 
-ENCODED_PAYLOAD=$(./cryptobase.py -k ${SUBST_KEY} -s subst_cfb -t encode "${PAYLOAD}")
-DECODED_PAYLOAD=$(./cryptobase.py -k ${SUBST_KEY} -s subst_cfb -t decode "${ENCODED_PAYLOAD}")
+ENCODED_PAYLOAD=$(./cryptobase.py -k ${SUBST_KEY} -m mapping.txt -s subst_cfb -t encode "${PAYLOAD}")
+DECODED_PAYLOAD=$(./cryptobase.py -k ${SUBST_KEY} -m mapping.txt -s subst_cfb -t decode "${ENCODED_PAYLOAD}")
 
 print_test_data "Modified Vigenere + CFB" $SUBST_KEY "${PAYLOAD}" "${ENCODED_PAYLOAD}" "${DECODED_PAYLOAD}" | column -tL  -s "|"
