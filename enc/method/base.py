@@ -1,6 +1,5 @@
 class Base():
 
-    
     def load(self, options):
         
         self.options = options
@@ -18,10 +17,38 @@ class Base():
         self.src_chars_len = len(self.src_chars)
         self.dst_chars_len = len(self.dst_chars)
         
-        if self.src_chars_len != self.dst_chars_len or self.dst_chars_len == 0 or self.src_chars_len == 0:
-            raise Exception("Character mapping lines is empty or charaster sets doesn't fit in length")
+        if self.src_chars_len == 0:
+            raise Exception('Main character set shouldn\'t be empty!')
+        
+        self.src_map = {}
+        self.dst_map = {}
+        self.new_dst_chars = []
+        
+        replace_origin_dst_chars = False
+        
+        for ix in range(self.src_chars_len):
+            if 0<=ix<self.dst_chars_len and self.dst_chars[ix] not in self.dst_map:
+                self.src_map[self.src_chars[ix]] = (self.dst_chars[ix], ix)
+                self.dst_map[self.dst_chars[ix]] = (self.src_chars[ix], ix)
+                self.new_dst_chars.append(self.dst_chars[ix])
+            else:
+                self.src_map[self.src_chars[ix]] = (self.src_chars[ix], ix)
+                self.dst_map[self.src_chars[ix]] = (self.src_chars[ix], ix)
+                self.new_dst_chars.append(self.src_chars[ix])
+                replace_origin_dst_chars = True
+        
+        # because we've got duplicates in dst_chars or it was shorter or empty
+        if replace_origin_dst_chars:
+            self.dst_chars = self.new_dst_chars
+            self.dst_char_len = len(self.dst_chars)
         
         self.after_load()
+    
+    def find_index(self, chars, char):
+        if char in chars:
+            return chars[char][1]
+        else:
+            raise Exception(f'Char {char} not in {self.dst_chars}')
     
     def before_load(self):
         print("before_load(): define me")

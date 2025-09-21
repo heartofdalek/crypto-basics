@@ -17,7 +17,7 @@ for fl in glob.glob("mapping*.txt"):
 parser = OptionParser(description='Make symmetric encryption with some basic algo\'s')
 
 parser.add_argument("-k", "--key", dest="key", default="8", help="encryption key")
-parser.add_argument("-m", "--map", dest="mapping", default="mapping_orig.txt", help="char mapping file: {}".format(", ".join(mappings_available)))
+parser.add_argument("-m", "--map", dest="mapping", default="mapping.txt", help="char mapping file: {}".format(", ".join(mappings_available)))
 parser.add_argument("-s", "--method", dest="method", default="subst_cfb", help="encryption method: {}".format(", ".join(allowed_methods)))
 parser.add_argument("-t", "--type", dest="type", default="encode", help="encryption direction: encode, decode")
 parser.add_argument("-d", "--debug", dest="is_debug", action='store_true', default=False, help="enable debug if specified")
@@ -38,4 +38,10 @@ try:
     
 except Exception as e:
     print(f'\n]> Error: {e}\n')
+    
+    if options.is_debug:
+        exc_type, exc_obj, exc_tb = sys.exc_info()
+        fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+        print(exc_type, fname, exc_tb.tb_lineno)
+    
     parser.print_help()

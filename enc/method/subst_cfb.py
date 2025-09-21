@@ -2,9 +2,6 @@ from enc.method.base import Base as BaseMethod
 
 class SubstCFB(BaseMethod):
     
-    def before_load(self):
-        pass
-    
     def after_load(self):
         
         min_key_length = 6
@@ -13,23 +10,6 @@ class SubstCFB(BaseMethod):
         
         if self.key_len<min_key_length:
             raise Exception(f'Key MUST be length of {min_key_length} or more')
-        
-        self.src_map = {}
-        self.dst_map = {}
-        self.new_dst_chars = []
-        
-        for ix in range(self.src_chars_len):
-            if self.dst_chars[ix] not in self.dst_map:
-                self.src_map[self.src_chars[ix]] = (self.dst_chars[ix], ix)
-                self.dst_map[self.dst_chars[ix]] = (self.src_chars[ix], ix)
-                self.new_dst_chars.append(self.dst_chars[ix])
-            else:
-                self.src_map[self.src_chars[ix]] = (self.src_chars[ix], ix)
-                self.dst_map[self.src_chars[ix]] = (self.src_chars[ix], ix)
-                self.new_dst_chars.append(self.src_chars[ix])
-        
-        self.dst_chars = self.new_dst_chars
-        self.dst_char_len = len(self.dst_chars)
         
         self.base_shift = self.calc_base_shift(self.key)
         
@@ -43,7 +23,8 @@ class SubstCFB(BaseMethod):
         shift = 0
 
         for x in key:
-            idx = ord(x)
+            char = self.src_map[x][0]
+            idx = self.find_index(self.dst_map, char)
             shift += idx*weight
             weight = weight + 1 if weight<10 else 1
             
@@ -53,7 +34,7 @@ class SubstCFB(BaseMethod):
 
     def encode(self, payload):
         
-        payload = str(payload).upper()
+        payload = payload.upper()
         
         result = []
         
@@ -81,7 +62,7 @@ class SubstCFB(BaseMethod):
     
     def decode(self, payload):
         
-        payload = str(payload).upper()
+        payload = payload.upper()
         
         result = []
         
@@ -106,9 +87,6 @@ class SubstCFB(BaseMethod):
             result.append( self.dst_map[self.dst_chars[decoded_char_idx]][0] )
         
         return ''.join(result)
-
-    def find_index(self, chars, char):
-        if char in chars:
-            return chars[char][1]
-        else:
-            raise Exception(f'Char {char} not in {self.dst_chars}')
+        
+    def before_load(self):
+        pass
