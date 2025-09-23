@@ -32,7 +32,7 @@ try:
     method = mf.create(options.method)
     method.load(options)
     
-    result = method.call(options, payload)
+    result = method.call(payload)
     
     print(result)
     

@@ -6,19 +6,16 @@ class Base():
         
         self.before_load()
         
-        self.key = options.key
+        self.key = self.options.key
         self.key_len = len(self.key)
         
-        with open(options.mapping) as file:
-            lines = [line.rstrip("\n") for line in file]
-            
-        self.src_chars = list(lines[0])
-        self.dst_chars = list(lines[1])
-        self.src_chars_len = len(self.src_chars)
-        self.dst_chars_len = len(self.dst_chars)
+        self.create_chars_list()
         
-        if self.src_chars_len == 0:
-            raise Exception('Main character set shouldn\'t be empty!')
+        self.build_chars_map()
+        
+        self.after_load()
+
+    def build_chars_map(self):
         
         self.src_map = {}
         self.dst_map = {}
@@ -41,8 +38,19 @@ class Base():
         if replace_origin_dst_chars:
             self.dst_chars = self.new_dst_chars
             self.dst_char_len = len(self.dst_chars)
+    
+    def create_chars_list(self):
+
+        with open(self.options.mapping) as file:
+            lines = [line.rstrip("\n") for line in file]
+            
+        self.src_chars = list(lines[0])
+        self.dst_chars = list(lines[1])
+        self.src_chars_len = len(self.src_chars)
+        self.dst_chars_len = len(self.dst_chars)
         
-        self.after_load()
+        if self.src_chars_len == 0:
+            raise Exception('Main character set shouldn\'t be empty!')
     
     def find_index(self, chars, char):
         if char in chars:
@@ -62,9 +70,9 @@ class Base():
     def encode(self, payload):
         print("encode(payload): define me")
         
-    def call(self, options, payload):
+    def call(self, payload):
         
-        method = options.type
+        method = self.options.type
         
         if method == 'decode':
             return self.decode(payload)
