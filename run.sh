@@ -30,3 +30,8 @@ ENCODED_PAYLOAD=$(./cryptobase.py -k ${SUBST_KEY} -m mapping.txt -s subst_cfb -t
 DECODED_PAYLOAD=$(./cryptobase.py -k ${SUBST_KEY} -m mapping.txt -s subst_cfb -t decode "${ENCODED_PAYLOAD}")
 
 print_test_data "Modified Vigenere + CFB" $SUBST_KEY "${PAYLOAD}" "${ENCODED_PAYLOAD}" "${DECODED_PAYLOAD}" | column -tL  -s "|"
+
+ENCODED_PAYLOAD=$(./cryptobase.py -k ${SUBST_KEY} -m mapping.txt -s bytes_cfb -t encode "${PAYLOAD}" | base64 -w 0)
+DECODED_PAYLOAD=$(echo "${ENCODED_PAYLOAD}" | base64 -d | ./cryptobase.py -k ${SUBST_KEY} -m mapping.txt -s bytes_cfb -t decode)
+
+print_test_data "ASCII Bytes + CFB" $SUBST_KEY "${PAYLOAD}" "base64:${ENCODED_PAYLOAD}" "${DECODED_PAYLOAD}" | column -tL  -s "|"
