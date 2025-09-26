@@ -1,0 +1,144 @@
+import sys
+from collections import deque
+from enc.method.base import Base as BaseMethod
+
+class BytesCFB(BaseMethod):
+    
+    bytes_mask = (
+        0xff,
+        0xffff,
+        0xffffff,
+        0xffffffff,
+        0xffffffffff,
+        0xffffffffffff,
+        0xffffffffffffff,
+        0xffffffffffffffff,
+    )
+    
+    char_code_divisor = 256
+    
+    def after_load(self):
+        
+        min_key_length = 6
+        
+        self.key_stream = deque([])
+        
+        if self.key_len<min_key_length:
+            raise Exception(f'Key MUST be length of {min_key_length} or more')
+        
+        self.base_shift = self.calc_base_shift(self.key)
+        
+
+    def detect_char_bytes_count(self, char_code):
+
+        result = 0
+        
+        for mask in self.bytes_mask:
+            if char_code & mask != char_code:
+                result += 1
+                continue
+            result += 1
+            break
+        
+        return result
+        
+
+    def pack(self, pack_list):
+        
+        bytes_num = len(pack_list)
+        
+        to_shift = 8 * (bytes_num - 1)
+        
+        result = 0
+        
+        for i in range(bytes_num):
+            result = result | pack_list[i]
+            result = result << to_shift
+            to_shift -= 8
+        
+        return chr(result)
+    
+    def unpack(self, char):
+        
+        char_code = ord(char)
+        bytes_num = self.detect_char_bytes_count(char_code)
+        
+        to_shift = 8 * (bytes_num - 1)
+        
+        result = []
+        
+        for i in range(bytes_num-1, -1, -1):
+            byte = char_code >> to_shift & self.bytes_mask[i]
+            result.append(byte)
+            to_shift -= 8
+        
+        return result
+    
+    def calc_base_shift(self, key):
+        
+        weight = 1
+        shift = 0
+
+        for x in key:
+
+            bytes_list = self.unpack(x)
+            
+            for b in bytes_list:
+                shift += b*weight
+                weight = weight + 1 if weight<10 else 1
+                self.key_stream.append(b)
+            
+        shift = shift % self.char_code_divisor
+
+        return shift
+
+    def encode(self, payload):
+        
+        result = []
+        
+        for char in payload:
+            
+            char_bytes = self.unpack(char)
+            new_char = []
+            
+            for char_byte in char_bytes:
+                
+                key_byte = self.key_stream.popleft()
+                encoded_char_byte = (char_byte + key_byte + self.base_shift) % self.char_code_divisor
+                
+                self.key_stream.append(encoded_char_byte)
+                new_char.append(encoded_char_byte)
+            
+            result.append( self.pack(new_char) )
+        
+        return ''.join(result)
+    
+    def decode(self, payload):
+        
+        result = []
+        
+        for char in payload:
+            
+            char_bytes = self.unpack(char)
+            new_char = []
+            
+            for char_byte in char_bytes:
+
+                key_byte = self.key_stream.popleft()
+                decoded_char_byte = (char_byte - key_byte - self.base_shift) % self.char_code_divisor
+                
+                self.key_stream.append(char_byte)
+                new_char.append(decoded_char_byte)
+            
+            result.append( self.pack(new_char) )
+        
+        return ''.join(result)
+        
+    def before_load(self):
+        pass
+ 
+    def create_chars_list(self):
+        pass
+    
+    def build_chars_map(self):
+        pass

@@ -37,7 +37,7 @@ class Base():
         # because we've got duplicates in dst_chars or it was shorter or empty
         if replace_origin_dst_chars:
             self.dst_chars = self.new_dst_chars
-            self.dst_char_len = len(self.dst_chars)
+            self.dst_chars_len = len(self.dst_chars)
     
     def create_chars_list(self):
 

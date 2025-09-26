@@ -2,6 +2,7 @@
 
 import glob
 import sys
+
 sys.dont_write_bytecode = True
 
 from argparse import ArgumentParser as OptionParser
@@ -25,7 +26,13 @@ parser.add_argument("payload", type=str, nargs='?', default="", help="text to en
 
 options = parser.parse_args()
 
-payload = options.payload if len(options.payload) else ""
+if options.payload:
+    payload = options.payload
+elif not sys.stdin.isatty():
+    payload = sys.stdin.read().strip()
+else:
+    parser.print_help()
+    sys.exit()
 
 try:
     

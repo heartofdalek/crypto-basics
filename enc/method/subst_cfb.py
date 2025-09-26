@@ -14,8 +14,7 @@ class SubstCFB(BaseMethod):
         self.base_shift = self.calc_base_shift(self.key)
         
         self.block_len = self.key_len
-        
-        self.block_pad_char = ' '
+
                 
     def calc_base_shift(self, key):
         
@@ -53,7 +52,7 @@ class SubstCFB(BaseMethod):
             char_idx = self.find_index(self.dst_map, char)
             key_idx = self.find_index(self.dst_map, block_char)
             
-            encoded_char_idx = (char_idx + key_idx + self.base_shift) % self.dst_char_len
+            encoded_char_idx = (char_idx + key_idx + self.base_shift) % self.dst_chars_len
             
             current_block.append( self.dst_chars[encoded_char_idx] )
             result.append( self.dst_chars[encoded_char_idx] )
@@ -81,7 +80,7 @@ class SubstCFB(BaseMethod):
             char_idx = self.find_index(self.dst_map, char)
             key_idx = self.find_index(self.dst_map, block_char)
             
-            decoded_char_idx = (char_idx - key_idx - self.base_shift) % self.dst_char_len
+            decoded_char_idx = (char_idx - key_idx - self.base_shift) % self.dst_chars_len
             
             current_block.append( char )
             result.append( self.dst_map[self.dst_chars[decoded_char_idx]][0] )
