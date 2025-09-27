@@ -1,4 +1,4 @@
-import sys
+import sys, math
 from collections import deque
 from enc.method.base import Base as BaseMethod
 
@@ -26,7 +26,7 @@ class BytesCFB(BaseMethod):
         if self.key_len<min_key_length:
             raise Exception(f'Key MUST be length of {min_key_length} or more')
         
-        self.base_shift = self.calc_base_shift(self.key)
+        self.initialize_key_stream(self.key)
         
 
     def detect_char_bytes_count(self, char_code):
@@ -74,7 +74,7 @@ class BytesCFB(BaseMethod):
         
         return result
     
-    def calc_base_shift(self, key):
+    def initialize_key_stream(self, key):
         
         weight = 1
         shift = 0
@@ -84,13 +84,9 @@ class BytesCFB(BaseMethod):
             bytes_list = self.unpack(x)
             
             for b in bytes_list:
-                shift += b*weight
-                weight = weight + 1 if weight<10 else 1
-                self.key_stream.append(b)
-            
-        shift = shift % self.char_code_divisor
+                vector_b = (weight**3 + weight + b) % self.char_code_divisor
+                self.key_stream.append(vector_b)
 
-        return shift
 
     def encode(self, payload):
         
@@ -104,9 +100,10 @@ class BytesCFB(BaseMethod):
             for char_byte in char_bytes:
                 
                 key_byte = self.key_stream.popleft()
-                encoded_char_byte = (char_byte + key_byte + self.base_shift) % self.char_code_divisor
+                encoded_char_byte = (char_byte + key_byte) % self.char_code_divisor
+                new_key_byte = (encoded_char_byte + key_byte) % self.char_code_divisor
                 
-                self.key_stream.append(encoded_char_byte)
+                self.key_stream.append(new_key_byte)
                 new_char.append(encoded_char_byte)
             
             result.append( self.pack(new_char) )
@@ -125,9 +122,10 @@ class BytesCFB(BaseMethod):
             for char_byte in char_bytes:
 
                 key_byte = self.key_stream.popleft()
-                decoded_char_byte = (char_byte - key_byte - self.base_shift) % self.char_code_divisor
+                decoded_char_byte = (char_byte - key_byte) % self.char_code_divisor
+                new_key_byte = (char_byte + key_byte) % self.char_code_divisor
                 
-                self.key_stream.append(char_byte)
+                self.key_stream.append(new_key_byte)
                 new_char.append(decoded_char_byte)
             
             result.append( self.pack(new_char) )
