@@ -8,12 +8,19 @@ class RSABase(BaseMethod):
     def before_load(self):
         self.options_parser.add_argument("-o", "--output-file-name", dest="output_file_name", default="id_rsa", help="template name for private and public keys")
         self.options = self.options_parser.parse_args()
-        self.priv_file = "{}.priv".format(self.options.output_file_name)
-        self.pub_file = "{}.pub".format(self.options.output_file_name)
+        self.generate_priv_file = "{}.priv".format(self.options.output_file_name)
+        self.generate_pub_file = "{}.pub".format(self.options.output_file_name)
+        
+    def after_load(self):
+        self.key_file = self.key if self.key!='8' else None
 
     def keygen(self, payload):
         p = self.generate_p()
         q = self.generate_q(p)
+        
+        if not self.are_coprime(p, q):
+            raise Exception("p and q are not coprime!")
+        
         n = p * q
         phi = (p - 1) * (q - 1)
             
@@ -34,7 +41,7 @@ class RSABase(BaseMethod):
         if self.options.is_debug:
             print(p, q, n, phi, e, d)
         
-        if os.path.exists(self.priv_file):
+        if os.path.exists(self.generate_priv_file) and not self.options.answer_yes:
             
             answer = 'n'
             
@@ -45,36 +52,41 @@ class RSABase(BaseMethod):
                 elif answer=='n' or answer=='':
                     sys.exit()
 
-        with open(self.priv_file, "w") as f:
+        with open(self.generate_priv_file, "w") as f:
             f.write(f"{d},{p},{q}")
             
-        with open(self.pub_file, "w") as f:
+        with open(self.generate_pub_file, "w") as f:
             f.write(f"{e},{n}")
             
         return "Public and private keys created"
 
     def encode(self, payload):
         
-        e, n = self.read_key(self.pub_file)
+        key_file = self.key_file if self.key_file is not None else self.generate_pub_file
+        
+        e, n = self.read_key(key_file)
         
         result = []
         
         for char in payload:
             C = pow(ord(char), e, n)
-            result.append(chr(C))
-        
-        return ''.join(result)
+            result.append(C)
+
+        return ','.join(map(str,result))
     
     def decode(self, payload):
         
-        d, p, q = self.read_key(self.priv_file)
+        key_file =  self.key_file if self.key_file is not None else self.generate_priv_file
+        
+        d, p, q = self.read_key(key_file)
         
         n = p * q
         
         result = []
         
-        for char in payload:
-            C = pow(ord(char), d, n)
+        for char in payload.split(','):
+            char_int = int(char)
+            C = pow(char_int, d, n)
             result.append(chr(C))
         
         return ''.join(result)
@@ -83,9 +95,11 @@ class RSABase(BaseMethod):
         return 241
     
     # numbers should be different, so p as arg to ckeck if need
+    # generator should
     def generate_q(self, p):
         return 307
     
+    # a and b are comprime when they have greatest mutual divisor as 1
     def are_coprime(self, a, b):
         return gcd(a, b) == 1
 
@@ -104,9 +118,6 @@ class RSABase(BaseMethod):
                 result.append(int(c))
 
         return result
- 
-    def after_load(self):
-        pass
  
     def create_chars_list(self):
         pass
