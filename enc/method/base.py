@@ -1,8 +1,9 @@
 class Base():
 
-    def load(self, options):
+    def load(self, options, options_parser):
         
         self.options = options
+        self.options_parser = options_parser
         
         self.before_load()
         
@@ -74,9 +75,9 @@ class Base():
         
         method = self.options.type
         
-        if method == 'decode':
-            return self.decode(payload)
-        elif method == 'encode':
-            return self.encode(payload)
+        callable_name = getattr(self, method, None)
+        
+        if callable_name is not None:
+            return callable_name(payload)
         else:
-            raise Exception("Wrong encryption direction. Available: encode, decode")
+            raise Exception(f'Wrong method: {method}')

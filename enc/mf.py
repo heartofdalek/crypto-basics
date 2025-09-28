@@ -7,6 +7,7 @@ class EncryptMethod():
         'caesar_mapped' : 'CaesarMapped',
         'subst_cfb' : 'SubstCFB',
         'bytes_cfb' : 'BytesCFB',
+        'rsa_base' : 'RSABase'
     }
     
     def __init__(self):

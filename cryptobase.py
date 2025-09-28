@@ -26,18 +26,17 @@ parser.add_argument("payload", type=str, nargs='?', default="", help="text to en
 
 options = parser.parse_args()
 
+payload = ''
+
 if options.payload:
     payload = options.payload
 elif not sys.stdin.isatty():
     payload = sys.stdin.read().strip()
-else:
-    parser.print_help()
-    sys.exit()
 
 try:
     
     method = mf.create(options.method)
-    method.load(options)
+    method.load(options, parser)
     
     result = method.call(payload)
     

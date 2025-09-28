@@ -77,7 +77,6 @@ class BytesCFB(BaseMethod):
     def initialize_key_stream(self, key):
         
         weight = 1
-        shift = 0
 
         for x in key:
 
@@ -86,6 +85,7 @@ class BytesCFB(BaseMethod):
             for b in bytes_list:
                 vector_b = (weight**3 + weight + b) % self.char_code_divisor
                 self.key_stream.append(vector_b)
+                weight = weight + 1 if weight < 10 else 1
 
 
     def encode(self, payload):
