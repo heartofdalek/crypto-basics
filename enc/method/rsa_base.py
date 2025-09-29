@@ -18,6 +18,7 @@ class RSABase(BaseMethod):
         p = self.generate_p()
         q = self.generate_q(p)
         
+        # this check should be in generate_q with while cycle but we have constants in task so check goes here just because
         if not self.are_coprime(p, q):
             raise Exception("p and q are not coprime!")
         
