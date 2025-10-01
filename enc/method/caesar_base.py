@@ -43,4 +43,4 @@ class CaesarBase(BaseMethod):
         return (ix + self.key) % self.dst_chars_len
 
     def find_decode_index(self, ix):
-        return (ix - self.key) % self.dst_chars_len
+        return (ix + self.dst_chars_len - self.key) % self.dst_chars_len
