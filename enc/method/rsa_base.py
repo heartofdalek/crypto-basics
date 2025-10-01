@@ -1,7 +1,9 @@
+import os
+import sys
+from math import gcd
 from enc.method.base import Base as BaseMethod
 from argparse import ArgumentParser as OptionParser
-from math import gcd
-import os, sys
+
 
 class RSABase(BaseMethod):
     
@@ -121,7 +123,9 @@ class RSABase(BaseMethod):
         return result
  
     def create_chars_list(self):
+        ''' clear for future '''
         pass
     
     def build_chars_map(self):
+        ''' clear for future '''
         pass

@@ -14,6 +14,7 @@ class EncryptMethod():
         pass
     
     def create(self, method) -> BaseMethod:
+        ''' fabric method to initialize one of the allowed encrypt methods '''
         
         if method not in self.allowed_methods:
             raise Exception("Wrong encryption method method. Available: {}".format(", ".join(self.allowed_methods.keys())))

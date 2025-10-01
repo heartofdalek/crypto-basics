@@ -1,6 +1,7 @@
 class Base():
 
     def load(self, options, options_parser):
+        ''' does initial work to setup working environment '''
         
         self.options = options
         self.options_parser = options_parser
@@ -17,6 +18,7 @@ class Base():
         self.after_load()
 
     def build_chars_map(self):
+        ''' creates charaters mapping to simplify indexes and chars search during substitution '''
         
         self.src_map = {}
         self.dst_map = {}
@@ -28,20 +30,25 @@ class Base():
             if 0<=ix<self.dst_chars_len and self.dst_chars[ix] not in self.dst_map:
                 self.src_map[self.src_chars[ix]] = (self.dst_chars[ix], ix)
                 self.dst_map[self.dst_chars[ix]] = (self.src_chars[ix], ix)
+                
+                ''' used to fix char duplicates in substitution character sets '''
                 self.new_dst_chars.append(self.dst_chars[ix])
             else:
                 self.src_map[self.src_chars[ix]] = (self.src_chars[ix], ix)
                 self.dst_map[self.src_chars[ix]] = (self.src_chars[ix], ix)
+                
+                ''' used to fix char duplicates in substitution character sets '''
                 self.new_dst_chars.append(self.src_chars[ix])
                 replace_origin_dst_chars = True
         
-        # because we've got duplicates in dst_chars or it was shorter or empty
+        ''' catched when we've got duplicates in dst_chars or it was shorter or empty '''
         if replace_origin_dst_chars:
             self.dst_chars = self.new_dst_chars
             self.dst_chars_len = len(self.dst_chars)
     
     def create_chars_list(self):
-
+        ''' creates source and substitution charasters list, from a file in base but depends on implementation '''
+        
         with open(self.options.mapping) as file:
             lines = [line.rstrip("\n") for line in file]
             
@@ -60,18 +67,23 @@ class Base():
             raise Exception(f'Char {char} not in {self.dst_chars}')
     
     def before_load(self):
-        print("before_load(): define me")
+        ''' abstract method but not @abstract '''
+        pass
         
     def after_load(self):
-        print("after_load(): define me")
+        ''' abstract method but not @abstract '''
+        pass
         
     def decode(self, payload):
-        print("decode(payload): define me")
+        ''' abstract method but not @abstract '''
+        pass
     
     def encode(self, payload):
-        print("encode(payload): define me")
+        ''' abstract method but not @abstract '''
+        pass
         
     def call(self, payload):
+        ''' entrypoint to make cli methods to work '''
         
         method = self.options.type
         

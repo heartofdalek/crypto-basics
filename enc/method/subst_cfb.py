@@ -87,5 +87,3 @@ class SubstCFB(BaseMethod):
         
         return ''.join(result)
         
-    def before_load(self):
-        pass

@@ -1,4 +1,4 @@
-import sys, math
+import sys
 from collections import deque
 from enc.method.base import Base as BaseMethod
 
@@ -30,7 +30,8 @@ class BytesCFB(BaseMethod):
         
 
     def detect_char_bytes_count(self, char_code):
-
+        ''' detects number of bytes for one- and multi-byte char code to pack/unpack '''
+        
         result = 0
         
         for mask in self.bytes_mask:
@@ -44,6 +45,7 @@ class BytesCFB(BaseMethod):
         
 
     def pack(self, pack_list):
+        ''' transform list of ints to  one- or multi-byte char '''
         
         bytes_num = len(pack_list)
         
@@ -59,6 +61,7 @@ class BytesCFB(BaseMethod):
         return chr(result)
     
     def unpack(self, char):
+        ''' transform one- or multi-byte char to list of ints '''
         
         char_code = ord(char)
         bytes_num = self.detect_char_bytes_count(char_code)
@@ -75,6 +78,7 @@ class BytesCFB(BaseMethod):
         return result
     
     def initialize_key_stream(self, key):
+        ''' increase entropy to fix simple keys like AAAAAA and fill initial key stream '''
         
         weight = 1
 
@@ -85,7 +89,7 @@ class BytesCFB(BaseMethod):
             for b in bytes_list:
                 vector_b = (weight**3 + weight + b) % self.char_code_divisor
                 self.key_stream.append(vector_b)
-                weight = weight + 1 if weight < 10 else 1
+                weight = weight + 1 if weight < 20 else 1
 
 
     def encode(self, payload):
@@ -131,12 +135,11 @@ class BytesCFB(BaseMethod):
             result.append( self.pack(new_char) )
         
         return ''.join(result)
-        
-    def before_load(self):
-        pass
- 
+
     def create_chars_list(self):
+        ''' clear for future '''
         pass
     
     def build_chars_map(self):
+        ''' clear for future '''
         pass

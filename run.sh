@@ -30,7 +30,7 @@ print_rsa_test_data() {
 ENCODED_PAYLOAD=$(./cryptobase.py -k ${CAESAR_KEY} -m mapping.txt -s caesar_mapped -t encode "${PAYLOAD}")
 DECODED_PAYLOAD=$(./cryptobase.py -k ${CAESAR_KEY} -m mapping.txt -s caesar_mapped -t decode "${ENCODED_PAYLOAD}")
 
-print_test_data "Caesar with substitute alphabet" $CAESAR_KEY "${PAYLOAD}" "${ENCODED_PAYLOAD}" "${DECODED_PAYLOAD}" | column -tL  -s "|"
+print_test_data "Lab1: Caesar with substitute alphabet" $CAESAR_KEY "${PAYLOAD}" "${ENCODED_PAYLOAD}" "${DECODED_PAYLOAD}" | column -tL  -s "|"
 
 ENCODED_PAYLOAD=$(./cryptobase.py -k ${CAESAR_KEY} -m mapping.txt -s caesar_simple -t encode "${PAYLOAD}")
 DECODED_PAYLOAD=$(./cryptobase.py -k ${CAESAR_KEY} -m mapping.txt -s caesar_simple -t decode "${ENCODED_PAYLOAD}")

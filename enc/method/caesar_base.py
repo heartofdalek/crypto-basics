@@ -3,9 +3,10 @@ from enc.method.base import Base as BaseMethod
 class CaesarBase(BaseMethod):
 
     def after_load(self):
-        
+
         self.key = int(self.key)
 
+        ''' key shouldn't be more than half of an alphabet size '''
         max_key_len = self.src_chars_len//2
         
         if self.key<0 or self.key>max_key_len:
@@ -41,7 +42,4 @@ class CaesarBase(BaseMethod):
         return ( ix + self.key ) % self.dst_chars_len
     
     def find_decode_index(self, ix):
-        return ( ix + self.dst_chars_len - self.key ) % self.dst_chars_len
-
-    def before_load(self):
-        pass
+        return ( ix - self.key ) % self.dst_chars_len

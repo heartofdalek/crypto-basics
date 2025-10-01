@@ -6,6 +6,7 @@ class CaesarSimple(CaesarBase):
         
         super().after_load()
         
+        ''' make algo as classic caesar: source and substitute chars are identical '''
         self.dst_chars = self.src_chars
         self.dst_chars_len = self.src_chars_len
         self.dst_map = self.src_map
