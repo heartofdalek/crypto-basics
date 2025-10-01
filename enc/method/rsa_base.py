@@ -17,17 +17,28 @@ class RSABase(BaseMethod):
         self.key_file = self.key if self.key!='8' else None
 
     def keygen(self, payload):
+        ''' This method creates all necessary variables to implementing encoding and decoding:
+        p, q, n, phi, d.
+        Method calls from a cli to use decode/encode with different keys.
+        '''
+        
+        # Выбирается два больших простых числа p и q.
         p = self.generate_p()
         q = self.generate_q(p)
         
-        # this check should be in generate_q with while cycle but we have constants in task so check goes here just because
+        ''' This check should be in generate_q with while cycle but we have constants in task so check goes here according to the task:
+        В программе предусмотреть проверку, являются ли два числа взаимно простыми.
+        '''
         if not self.are_coprime(p, q):
             raise Exception("p and q are not coprime!")
         
         n = p * q
         phi = (p - 1) * (q - 1)
-            
-        e = 2  # start with minimal value
+        
+        ''' start with minimal possible value
+        Выбирается минимально возможное число e, которое взаимно простое с результатом phi=(p-1)*(q-1)
+        '''
+        e = 2
         while e < phi:
             if self.are_coprime(e, phi):
                 break
@@ -35,7 +46,8 @@ class RSABase(BaseMethod):
         
         if e >= phi:
             raise Exception("Couldn't find coprime e with phi!")
-
+        
+        ''' Определяется такое число d, для которого является истинным соотношение (e*d)mod(phi)=1 '''
         d = self.find_d(e, phi)
         
         if d is None:
@@ -44,6 +56,7 @@ class RSABase(BaseMethod):
         if self.options.is_debug:
             print(p, q, n, phi, e, d)
         
+        ''' user decides should we recreate keys or not '''
         if os.path.exists(self.generate_priv_file) and not self.options.answer_yes:
             
             answer = 'n'
@@ -55,9 +68,15 @@ class RSABase(BaseMethod):
                 elif answer=='n' or answer=='':
                     sys.exit()
 
+        ''' write private key file
+        Секретный ключ - числа d, p и q
+        '''
         with open(self.generate_priv_file, "w") as f:
             f.write(f"{d},{p},{q}")
             
+        ''' write public key file
+        Открытым ключом являются числа e и n 
+        '''
         with open(self.generate_pub_file, "w") as f:
             f.write(f"{e},{n}")
             
@@ -65,6 +84,7 @@ class RSABase(BaseMethod):
 
     def encode(self, payload):
         
+        ''' read public key from a file '''
         key_file = self.key_file if self.key_file is not None else self.generate_pub_file
         
         e, n = self.read_key(key_file)
@@ -79,10 +99,12 @@ class RSABase(BaseMethod):
     
     def decode(self, payload):
         
+        ''' read private key from a file '''
         key_file =  self.key_file if self.key_file is not None else self.generate_priv_file
         
         d, p, q = self.read_key(key_file)
         
+        ''' restore n from p and q '''
         n = p * q
         
         result = []
@@ -97,13 +119,12 @@ class RSABase(BaseMethod):
     def generate_p(self):
         return 241
     
-    # numbers should be different, so p as arg to ckeck if need
-    # generator should
     def generate_q(self, p):
+        ''' numbers should be different, so p as arg to check coprime if needs '''
         return 307
     
-    # a and b are comprime when they have greatest mutual divisor as 1
     def are_coprime(self, a, b):
+        ''' a and b are comprime when they have greatest mutual divisor as 1 '''
         return gcd(a, b) == 1
 
     def find_d(self, e, phi):
@@ -113,6 +134,8 @@ class RSABase(BaseMethod):
         return None
 
     def read_key(self, filename):
+        ''' read key from a file and prepare key structure '''
+        
         result = []
         
         with open(filename, 'r') as f:
