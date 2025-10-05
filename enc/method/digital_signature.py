@@ -1,0 +1,2 @@
+class DigitalSignature():
+    pass
