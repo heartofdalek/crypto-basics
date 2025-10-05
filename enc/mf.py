@@ -1,18 +1,30 @@
+import glob
+import os
 from enc.method.base import Base as BaseMethod
 
 
 class EncryptMethod():
 
-    allowed_methods = {
-        'caesar_simple': 'CaesarSimple',
-        'caesar_mapped': 'CaesarMapped',
-        'subst_cfb': 'SubstCFB',
-        'bytes_cfb': 'BytesCFB',
-        'rsa_base': 'RSABase'
-    }
+    allowed_methods = {}
 
     def __init__(self):
+        self.load_allowed_methods()
         pass
+
+    def load_allowed_methods(self):
+        path = os.path.dirname(os.path.dirname(__file__))
+        for file in glob.glob(f'{path}/config/*.py'):
+            methods_config = os.path.splitext(os.path.basename(file))[0]
+            
+            cfg = 'allowed_methods'
+            
+            module = __import__(
+                f'config.{methods_config}', globals(), locals(), [cfg], 0)
+            
+            allowed_methods = getattr(module, cfg)
+            
+            self.allowed_methods.update(allowed_methods)
+            
 
     def create(self, method) -> BaseMethod:
         ''' fabric method to initialize one of the allowed encrypt methods '''
