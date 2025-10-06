@@ -1,2 +1,4 @@
 __pycache__
 id_rsa*
+*.priv
+*.pub
