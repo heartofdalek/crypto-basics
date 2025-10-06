@@ -33,7 +33,7 @@ class SubstCFB(BaseMapper):
 
         return shift
 
-    def encode(self, payload):
+    def action_encode(self, payload):
 
         payload = payload.upper()
 
@@ -62,7 +62,7 @@ class SubstCFB(BaseMapper):
 
         return ''.join(result)
 
-    def decode(self, payload):
+    def action_decode(self, payload):
 
         payload = payload.upper()
 

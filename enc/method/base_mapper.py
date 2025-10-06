@@ -69,15 +69,3 @@ class BaseMapper(BaseMethod):
             return chars[char][1]
         else:
             raise Exception(f'Char {char} not in {self.dst_chars}')
-
-
-    def decode(self, payload):
-        ''' abstract method but not @abstract '''
-        pass
-
-
-    def encode(self, payload):
-        ''' abstract method but not @abstract '''
-        pass
-
- 
