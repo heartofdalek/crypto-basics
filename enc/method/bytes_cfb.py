@@ -90,7 +90,7 @@ class BytesCFB(BaseMethod):
                 self.key_stream.append(vector_b)
                 weight = weight + 1 if weight < 20 else 1
 
-    def encode(self, payload):
+    def action_encode(self, payload):
 
         result = []
 
@@ -114,7 +114,7 @@ class BytesCFB(BaseMethod):
 
         return ''.join(result)
 
-    def decode(self, payload):
+    def action_decode(self, payload):
 
         result = []
 
