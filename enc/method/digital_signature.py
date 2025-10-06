@@ -2,7 +2,6 @@ import random
 import os
 import sys
 from sympy import isprime, nextprime
-import base64
 from enc.method.base import Base as BaseMethod
 
 
@@ -10,17 +9,6 @@ class DigitalSignature(BaseMethod):
 
     error_message = 'Sign incorrect'
     success_message = 'Verified'
-
-    def before_load(self):
-        self.options_parser.add_argument("-o", "--output-file-name", dest="output_file_name",
-                                         default="ds", help="template name for private and public keys")
-        self.options = self.options_parser.parse_args()
-        self.generate_priv_file = "{}.priv".format(
-            self.options.output_file_name)
-        self.generate_pub_file = "{}.pub".format(self.options.output_file_name)
-
-    def after_load(self):
-        self.key_file = self.key if self.key != '8' else None
         
     def keygen(self, *args):
         ''' generate all necessary data for private and public keys '''
@@ -58,18 +46,6 @@ class DigitalSignature(BaseMethod):
         with open(self.generate_pub_file, "w") as f:
             f.write(f"{param_p},{param_q},{param_a},{pub_key_y}")
 
-    def read_key(self, filename):
-        ''' read key from a file and prepare key structure '''
-
-        result = []
-
-        with open(filename, 'r') as f:
-            txt = f.read().strip().split(',')
-            for c in txt:
-                result.append(int(c))
-
-        return result
-
     def generate_parameters(self):
         
         p_bits = random.randint(510, 511) # 2^509<p<2^512
@@ -88,6 +64,7 @@ class DigitalSignature(BaseMethod):
 
 
         # Генерация a: a^q mod p = 1
+        
         h = (param_p - 1) // param_q
         
         while True:
@@ -97,35 +74,43 @@ class DigitalSignature(BaseMethod):
             # Вычисляем a = g^h mod p
             param_a = pow(g, h, param_p)
         
-            # Проверяем, что a != 1 (это гарантирует, что a^q ≡ 1 mod p)
+            # Проверяем, что a != 1, это гарантирует, что a^q ≡ 1 mod p
             if param_a != 1:
                 break
         
         return (param_p, param_q, param_a)
 
     def generate_prime(self, bits):
+        ''' generate prime number with size of {bits} '''
         
         result = 0
         
         while True:
             candidate = random.getrandbits(bits)
             
-            candidate |= (1 << bits - 1) | 1  # Устанавливаем старший бит и младший бит
+            candidate |= (1 << bits - 1) | 1  # setup high and low bits
             
             if isprime(candidate):
                 return candidate
 
     def sign(self, payload):
-        ''' read private key from a file '''
+        ''' creates digital sign of input payload '''
+        
+        # чтение файла приватного ключа
         key_file = self.key_file if self.key_file is not None else self.generate_priv_file
         
         param_p, param_q, param_a, priv_key_x = self.read_key(key_file)
         
+        # хеш входной строки
         hm = self.hash(payload)
         
         if hm % param_q == 0:
             hm = 1
         
+        '''
+        Вычисляем подпись с рандомизированным k = 1<k<q
+        Значения r1, s являются электронной подписью сообщения payload и передаются вместе с ним по каналам связи.
+        '''
         while True:
             k = random.randint(2, param_q-1)
             r = pow(param_a, k, param_p)
@@ -142,7 +127,9 @@ class DigitalSignature(BaseMethod):
         return f'{payload}|{r1},{s}'
     
     def verify(self, payload):
-        ''' read public key from a file '''
+        ''' checks digital sign of a payload '''
+        
+        # чтение файла публичного ключа м последующим разбором на переменные
         key_file = self.key_file if self.key_file is not None else self.generate_pub_file
         
         param_p, param_q, param_a, pub_key_y = self.read_key(key_file)
@@ -153,13 +140,15 @@ class DigitalSignature(BaseMethod):
         r1, s = list(map(int, payload[delim_pos+1:].split(",")))
 
         if not (0<r1<param_q and 0<s<param_q):
-            raise Exception(error_message)
+            return self.error_message
         
+        # хеш входной строки
         hm = self.hash(m)
         
         if hm % param_q == 0:
             hm = 1
     
+        # Вычисление параметров согласно алгоритму
         v = pow(hm, param_q - 2, param_q)
         
         z1 = (s * v) % param_q
@@ -180,6 +169,31 @@ class DigitalSignature(BaseMethod):
             result = (result + ord(char)) % divider
         
         return result % divider
+
+    ''' служебные методы  '''
+
+    def before_load(self):
+        self.options_parser.add_argument("-o", "--output-file-name", dest="output_file_name",
+                                         default="ds", help="template name for private and public keys")
+        self.options = self.options_parser.parse_args()
+        self.generate_priv_file = "{}.priv".format(
+            self.options.output_file_name)
+        self.generate_pub_file = "{}.pub".format(self.options.output_file_name)
+
+    def after_load(self):
+        self.key_file = self.key if self.key != '8' else None
+
+    def read_key(self, filename):
+        ''' read key from a file and prepare key structure '''
+
+        result = []
+
+        with open(filename, 'r') as f:
+            txt = f.read().strip().split(',')
+            for c in txt:
+                result.append(int(c))
+
+        return result
 
     def create_chars_list(self):
         ''' clear for future '''
