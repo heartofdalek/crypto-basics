@@ -29,7 +29,7 @@ class Base():
     def call(self, payload):
         ''' entrypoint to make cli methods to work '''
 
-        method = self.options.type
+        method = "action_{}".format(self.options.type)
 
         callable_name = getattr(self, method, None)
 
