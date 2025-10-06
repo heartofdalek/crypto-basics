@@ -10,7 +10,7 @@ class DigitalSignature(BaseMethod):
     error_message = 'Sign incorrect'
     success_message = 'Verified'
         
-    def keygen(self, *args):
+    def action_keygen(self, *args):
         ''' generate all necessary data for private and public keys '''
         
         # recreate keys if needs
@@ -93,7 +93,7 @@ class DigitalSignature(BaseMethod):
             if isprime(candidate):
                 return candidate
 
-    def sign(self, payload):
+    def action_sign(self, payload):
         ''' creates digital sign of input payload '''
         
         # чтение файла приватного ключа
@@ -126,7 +126,7 @@ class DigitalSignature(BaseMethod):
 
         return f'{payload}|{r1},{s}'
     
-    def verify(self, payload):
+    def action_verify(self, payload):
         ''' checks digital sign of a payload '''
         
         # чтение файла публичного ключа м последующим разбором на переменные
@@ -195,10 +195,3 @@ class DigitalSignature(BaseMethod):
 
         return result
 
-    def create_chars_list(self):
-        ''' clear for future '''
-        pass
-
-    def build_chars_map(self):
-        ''' clear for future '''
-        pass
