@@ -24,6 +24,19 @@ class RSABase(BaseMethod):
         Method calls from a cli to use decode/encode with different keys.
         '''
 
+        ''' user decides should we recreate keys or not '''
+        if os.path.exists(self.generate_priv_file) and not self.options.answer_yes:
+
+            answer = 'n'
+
+            while True:
+                answer = input(
+                    "Private key exists! Create another one? (у/N): ").lower().strip()
+                if answer == 'y':
+                    break
+                elif answer == 'n' or answer == '':
+                    sys.exit()
+
         # Выбирается два больших простых числа p и q.
         p = self.generate_p()
         q = self.generate_q(p)
@@ -57,19 +70,6 @@ class RSABase(BaseMethod):
 
         if self.options.is_debug:
             print(p, q, n, phi, e, d)
-
-        ''' user decides should we recreate keys or not '''
-        if os.path.exists(self.generate_priv_file) and not self.options.answer_yes:
-
-            answer = 'n'
-
-            while True:
-                answer = input(
-                    "Private key exists! Create another one? (у/N): ").lower().strip()
-                if answer == 'y':
-                    break
-                elif answer == 'n' or answer == '':
-                    sys.exit()
 
         ''' write private key file
         Секретный ключ - числа d, p и q
