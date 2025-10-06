@@ -18,7 +18,7 @@ class RSABase(BaseMethod):
     def after_load(self):
         self.key_file = self.key if self.key != '8' else None
 
-    def keygen(self, payload):
+    def action_keygen(self, payload):
         ''' This method creates all necessary variables to implementing encoding and decoding:
         p, q, n, phi, d.
         Method calls from a cli to use decode/encode with different keys.
@@ -85,7 +85,7 @@ class RSABase(BaseMethod):
 
         return "Public and private keys created"
 
-    def encode(self, payload):
+    def action_encode(self, payload):
         ''' read public key from a file '''
         key_file = self.key_file if self.key_file is not None else self.generate_pub_file
 
@@ -99,7 +99,7 @@ class RSABase(BaseMethod):
 
         return ','.join(map(str, result))
 
-    def decode(self, payload):
+    def action_decode(self, payload):
         ''' read private key from a file '''
         key_file = self.key_file if self.key_file is not None else self.generate_priv_file
 
