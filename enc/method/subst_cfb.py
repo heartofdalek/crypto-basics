@@ -1,10 +1,12 @@
-from enc.method.base import Base as BaseMethod
+from enc.method.base_mapper import BaseMapper
 
 
-class SubstCFB(BaseMethod):
+class SubstCFB(BaseMapper):
 
     def after_load(self):
-
+        
+        super().after_load()
+        
         min_key_length = 6
 
         self.key = list(str(self.key).upper())

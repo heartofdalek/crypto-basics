@@ -5,7 +5,7 @@ import sys
 sys.dont_write_bytecode = True
 
 from enc.mf import EncryptMethod
-from argparse import ArgumentParser as OptionParser
+from argparse import ArgumentParser
 
 
 
@@ -16,7 +16,7 @@ mappings_available = []
 for fl in glob.glob("mapping*.txt"):
     mappings_available.append(fl)
 
-parser = OptionParser(
+parser = ArgumentParser(
     description='Make symmetric encryption with some basic algo\'s')
 
 parser.add_argument("-k", "--key", dest="key",
@@ -45,8 +45,8 @@ elif not sys.stdin.isatty():
 
 try:
 
-    method = mf.create(options.method)
-    method.load(options, parser)
+    method = mf.create(parser)
+    method.load()
 
     result = method.call(payload)
 

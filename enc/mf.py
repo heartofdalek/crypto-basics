@@ -1,5 +1,6 @@
 import glob
 import os
+from argparse import ArgumentParser
 from enc.method.base import Base as BaseMethod
 
 
@@ -26,9 +27,11 @@ class EncryptMethod():
             self.allowed_methods.update(allowed_methods)
             
 
-    def create(self, method) -> BaseMethod:
+    def create(self, parser: ArgumentParser) -> BaseMethod:
         ''' fabric method to initialize one of the allowed encrypt methods '''
-
+        
+        method = parser.parse_args().method
+        
         if method not in self.allowed_methods:
             raise Exception("Wrong encryption method method. Available: {}".format(
                 ", ".join(self.allowed_methods.keys())))
@@ -37,4 +40,4 @@ class EncryptMethod():
         module = __import__(
             f'enc.method.{method}', globals(), locals(), [classname], 0)
         callable_name = getattr(module, classname)
-        return callable_name()
+        return callable_name(parser)
