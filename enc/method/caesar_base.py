@@ -15,7 +15,7 @@ class CaesarBase(BaseMapper):
         if self.key < 0 or self.key > max_key_len:
             raise Exception(f'Key should be in range of 0-{max_key_len}')
 
-    def decode(self, payload):
+    def action_decode(self, payload):
 
         payload = payload.upper()
 
@@ -28,7 +28,7 @@ class CaesarBase(BaseMapper):
 
         return ''.join(result)
 
-    def encode(self, payload):
+    def action_encode(self, payload):
 
         payload = payload.upper()
 
