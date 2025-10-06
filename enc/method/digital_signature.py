@@ -140,7 +140,7 @@ class DigitalSignature(BaseMethod):
         r1, s = list(map(int, payload[delim_pos+1:].split(",")))
 
         if not (0<r1<param_q and 0<s<param_q):
-            raise Exception(error_message)
+            return self.error_message
         
         # хеш входной строки
         hm = self.hash(m)
