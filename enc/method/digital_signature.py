@@ -194,4 +194,3 @@ class DigitalSignature(BaseMethod):
                 result.append(int(c))
 
         return result
-
