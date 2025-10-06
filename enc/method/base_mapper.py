@@ -3,17 +3,6 @@ from enc.method.base import Base as BaseMethod
 
 class BaseMapper(BaseMethod):
 
-    def load(self):
-        ''' does initial work to setup working environment '''
-
-        self.before_load()
-
-        self.key = self.options.key
-        self.key_len = len(self.key)
-
-        self.after_load()
-
-
     def after_load(self):
         self.create_chars_list()
         self.build_chars_map()
