@@ -20,7 +20,7 @@ print_test_data() {
     echo ""
 }
 
-#./cryptobase.py -s digital_signature -t keygen
+./cryptobase.py -s digital_signature -t keygen
 
 SIGN_RESULT=$(./cryptobase.py -d -s digital_signature -t sign "${PAYLOAD}")
 VERIFY_RESULT=$(./cryptobase.py -d -s digital_signature -t verify "$SIGN_RESULT")
