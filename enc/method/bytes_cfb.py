@@ -137,10 +137,3 @@ class BytesCFB(BaseMethod):
 
         return ''.join(result)
 
-    def create_chars_list(self):
-        ''' clear for future '''
-        pass
-
-    def build_chars_map(self):
-        ''' clear for future '''
-        pass

@@ -1,10 +1,12 @@
-from enc.method.base import Base as BaseMethod
+from enc.method.base_mapper import BaseMapper
 
 
-class CaesarBase(BaseMethod):
+class CaesarBase(BaseMapper):
 
     def after_load(self):
-
+        
+        super().after_load()
+        
         self.key = int(self.key)
 
         ''' key shouldn't be more than half of an alphabet size '''
