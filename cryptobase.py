@@ -10,7 +10,7 @@ from argparse import ArgumentParser as OptionParser
 
 
 mf = EncryptMethod()
-allowed_methods = mf.allowed_methods.keys()
+allowed_methods = list(mf.allowed_methods.keys())
 
 mappings_available = []
 for fl in glob.glob("mapping*.txt"):
@@ -23,7 +23,7 @@ parser.add_argument("-k", "--key", dest="key",
                     default="8", help="key or key file")
 parser.add_argument("-m", "--map", dest="mapping", default="mapping.txt",
                     help="char mapping file: {}".format(", ".join(mappings_available)))
-parser.add_argument("-s", "--method", dest="method", default="subst_cfb",
+parser.add_argument("-s", "--method", dest="method", default=allowed_methods[0],
                     help="encryption method: {}".format(", ".join(allowed_methods)))
 parser.add_argument("-t", "--type", dest="type", default="encode",
                     help="encryption direction: encode, decode")
