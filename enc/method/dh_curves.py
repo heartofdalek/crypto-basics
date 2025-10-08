@@ -1,5 +1,5 @@
 from enc.method.base import Base as BaseMethod
 
 
-class LabNMethod(BaseMethod):
+class DHCurves(BaseMethod):
     pass
