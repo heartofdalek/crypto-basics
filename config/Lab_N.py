@@ -1,3 +1,3 @@
 allowed_methods = {
-    'bytes_cfb': 'BytesCFB',
+    'lab_n_method': 'LabNMethod',
 }
