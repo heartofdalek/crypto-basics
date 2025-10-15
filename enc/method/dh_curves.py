@@ -3,7 +3,7 @@ from lib.ec import EllipticCurve
 
 class DHCurves(BaseMethod):
     
-    tests = [
+    test_payload = [
         ( 'a', 'b', 'p', 'G', 'k1', 'k2' ),
         ( -1, 1, 29, (9, 27), 4, 17 ),
         ( 1, 1, 23, (7, 11), 5, 16 ), # мой вариант 2, из методички
@@ -24,11 +24,11 @@ class DHCurves(BaseMethod):
     
     def action_main_task(self, payload):
         
-        a, b, p, G, k1, k2 = self.tests[self.key]
+        a, b, p, G, k1, k2 = self.test_payload[self.key]
         
         result = self.diffie_hellman_ec(a, b, p, G, k1, k2)
         
-        return f'Вариант {self.key}: {result}'
+        return f'{result}'
 
     
     def diffie_hellman_ec(self, a, b, p, G, k1, k2):
