@@ -17,7 +17,7 @@ for fl in glob.glob("mapping*.txt"):
     mappings_available.append(fl)
 
 parser = ArgumentParser(
-    description='Make symmetric encryption with some basic algo\'s')
+    description='Make crypto labs with some basic algo\'s')
 
 parser.add_argument("-k", "--key", dest="key",
                     default="8", help="key or key file")
@@ -53,11 +53,11 @@ try:
     print(result)
 
 except Exception as e:
-    print(f'\n]> Error: {e}\n')
+    print(f']> Error: {e}')
 
     if options.is_debug:
         exc_type, exc_obj, exc_tb = sys.exc_info()
         fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
         print(exc_type, fname, exc_tb.tb_lineno)
 
-    parser.print_help()
+    #parser.print_help()
